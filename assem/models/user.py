@@ -1,21 +1,19 @@
 # models/user.py
+import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from assem.db.database import Base
 
-import datetime
-
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = 'user'
     id = Column(Integer, primary_key=True, index=True)
-    phone = Column(String(11), unique=True, index=True)
-    first_name = Column(String(191), nullable=True)
-    last_name = Column(String(191), nullable=True)
-    role_id = Column(Integer, ForeignKey('system_role.id'), nullable=True)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.datetime.utcnow)
-    business_id = Column(Integer, ForeignKey('business.id'), nullable=True)
-    hashed_password = Column(String(191), nullable=True)
+    first_name = Column(String(60), nullable=False)
+    last_name = Column(String(60), nullable=False)
+    phone = Column(String(11), nullable=False)
+    role_id = Column(Integer, ForeignKey('system_role.id'), nullable=False)
+    business_id = Column(Integer, ForeignKey('business.id'), nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow())
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow())
 
-    business = relationship("Business", back_populates="users")
-    role = relationship("Role", back_populates="users")
+    role = relationship('Role', back_populates='user')
+    business = relationship('Business', back_populates='user')
