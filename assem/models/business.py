@@ -1,4 +1,4 @@
-# models/user.py
+# models/business.py
 import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
@@ -22,5 +22,6 @@ class Business(Base):
     # Добавил back_populates для двусторонней связи
     type = relationship('Type', back_populates='business')
     user = relationship('User', back_populates='business')
-    branch = relationship('Branch', back_populates='business')  # back_populates пропущен в вашей модели Branch
+    branches = relationship('Branch', back_populates='business')  # back_populates пропущен в вашей модели Branch
     subscription = relationship('Subscription', back_populates='business')
+    products = relationship('Product', back_populates='business')

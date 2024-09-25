@@ -1,4 +1,4 @@
-# models/user.py
+# models/plans.py
 import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey,Float
 from sqlalchemy.orm import relationship

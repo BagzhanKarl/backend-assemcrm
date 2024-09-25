@@ -1,6 +1,8 @@
-from sqlalchemy import Integer, String, Boolean, ForeignKey, Column
+# models/branch.py
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from assem.db.database import Base
+import datetime
 
 class Branch(Base):
     __tablename__ = 'branch'
@@ -13,4 +15,7 @@ class Branch(Base):
 
     business_id = Column(Integer, ForeignKey('business.id'), nullable=False)
 
-    business = relationship('Business', back_populates='branch')
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)  # Добавлено
+    updated_at = Column(DateTime, default=datetime.datetime.utcnow)  # Добавлено
+
+    business = relationship('Business', back_populates='branches')
