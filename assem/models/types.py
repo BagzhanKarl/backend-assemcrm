@@ -11,12 +11,12 @@ class Type(Base):
     category_id = Column(Integer, ForeignKey('system_category.id'), nullable=False)
     type = Column(String(60), nullable=False, default='service')
 
-
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updatet_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    category = relationship('Category', back_populates="type")
-    business = relationship('business', back_populates='type')
+    # Указание двусторонней связи с Category и Business
+    category = relationship('Category', back_populates="types")  # изменил 'type' на 'types'
+    business = relationship('Business', back_populates='type')
 
 class Category(Base):
     __tablename__ = "system_category"
@@ -25,4 +25,4 @@ class Category(Base):
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     updatet_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-    type = relationship('Type', back_populates='category')
+    types = relationship('Type', back_populates='category')  # изменил 'type' на 'types'

@@ -3,9 +3,9 @@ import datetime
 
 SECRET_KEY = "assemai"
 
-def generate_token(user_id, exp_minutes=60):
+def generate_token(user_id, business, role, exp_minutes=60):
     expiration_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=exp_minutes)
-    token = jwt.encode({"user": user_id, "exp": expiration_time}, SECRET_KEY, algorithm="HS256")
+    token = jwt.encode({"user": user_id, "business": business,"role":role, "exp": expiration_time}, SECRET_KEY, algorithm="HS256")
     return token
 
 def decode_token(token):
