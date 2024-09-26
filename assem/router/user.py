@@ -56,5 +56,5 @@ async def login_user(user: UserLogin, response: Response, db: Session = Depends(
         raise HTTPException(status_code=400, detail="Неправильный номер телефона или пароль")
 
     token = generate_token(existing_user.id, existing_user.business_id, existing_user.role_id)
-    response.set_cookie(key="access_token", value=token, httponly=True, max_age=3600, secure=True, domain="*.assemcrm.kz", samesite=None)
+    response.set_cookie(key="access_token", value=token, httponly=True, max_age=3600)
     return {'phone': user.phone}
