@@ -23,3 +23,8 @@ async def handle_whatsapp_webhook(request: WebhookRequest, db: Session = Depends
         db.add(message)
     db.commit()
     return {"detail": "Messages saved successfully"}
+
+@webhook_router.get('/whatsapp/all')
+async def get_all(db: Session = Depends(get_db)):
+    messages = db.query(Whatsapp).all()
+    return messages
