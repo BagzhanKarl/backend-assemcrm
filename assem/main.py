@@ -5,8 +5,18 @@ from assem.router import user_router, categoryAPI, typesApi, businessAPI, role_r
 
 app = FastAPI(title='Assem', version='1.0.0')
 
+app.include_router(user_router)
+app.include_router(businessAPI)
+app.include_router(branch_router)
+app.include_router(product_router)
+app.include_router(categoryAPI)
+app.include_router(typesApi)
+app.include_router(role_router)
+
+app.include_router(webhook_router)
+
 origins = [
-    "https://*.assemcrm.kz",
+    "https://demo.assemcrm.kz",
     # Вы можете добавить другие разрешенные источники, если нужно
 ]
 
@@ -17,13 +27,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.include_router(user_router)
-app.include_router(businessAPI)
-app.include_router(branch_router)
-app.include_router(product_router)
-app.include_router(categoryAPI)
-app.include_router(typesApi)
-app.include_router(role_router)
-
-app.include_router(webhook_router)
