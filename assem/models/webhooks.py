@@ -14,4 +14,15 @@ class Whatsapp(Base):
     timestamp = Column(String(255))               # Временная метка
     text_body = Column(String(255))                # Текст сообщения
     channel_id = Column(String(255))               # ID канала
+    business = Column(String(255))
     status = Column(Boolean, default=False)
+
+class Messages(Base):
+    __tablename__ = 'messages'
+
+    id = Column(Integer, primary_key=True, index=True)
+    business = Column(String(255))
+    chat_id = Column(String(255))
+    text = Column(String(255))
+    read = Column(Boolean, default=False)
+    side = Column(String(5))

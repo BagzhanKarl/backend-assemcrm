@@ -9,4 +9,4 @@ from .plans import Subscription
 from .product import Product
 from .product_image import ProductImage
 
-from .webhooks import Whatsapp
+from .webhooks import Whatsapp, Messages
