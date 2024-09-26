@@ -6,8 +6,7 @@ from assem.router import user_router, categoryAPI, typesApi, businessAPI, role_r
 app = FastAPI(title='Assem', version='1.0.0')
 
 origins = [
-    "https://app.assemcrm.kz",
-    "http://app.assemcrm.kz",
+    "https://*.assemcrm.kz",
     # Вы можете добавить другие разрешенные источники, если нужно
 ]
 
