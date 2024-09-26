@@ -10,3 +10,5 @@ from .product import Product
 from .product_image import ProductImage
 
 from .webhooks import Whatsapp, Messages
+
+from .ai import AiSettings

@@ -6,3 +6,5 @@ from .role import RoleCreate, RoleRead
 from .branch import BranchCreate, BranchResponse, BranchResponseAll
 from .product import ProductResponse, ProductImageResponse
 from .webhooks import WebhookRequest, MessageBody
+from .openai import ChatCompletionSchema
+from .openai_chat import ChatArray, Chat, SystemSettings
