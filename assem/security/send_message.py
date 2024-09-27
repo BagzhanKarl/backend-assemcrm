@@ -18,4 +18,3 @@ def send_message(token, typing_time, to, body):
 
     response = requests.post(url, json=payload, headers=headers)
     return response.text
-
