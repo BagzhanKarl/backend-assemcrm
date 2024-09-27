@@ -52,6 +52,10 @@ async def create_system_messages(platform: str, content: SystemSettings, db: Ses
 
     return [settings]
 
+@ai.post('/system/settings/get/{platform}')
+async def get_all_system_messages(platform: str, db: Session = Depends(get_db)):
+    settings = db.query(AiSettings).filter(AiSettings.platform == platform).all()
+    return settings
 @ai.delete('/system/settings/{id}', status_code=204)
 async def delete_system_message(id: int, db: Session = Depends(get_db)):
     # Находим запись по id
@@ -66,6 +70,20 @@ async def delete_system_message(id: int, db: Session = Depends(get_db)):
 
     return {"detail": "Settings deleted successfully"}
 
+@ai.put('/system/settings/{id}')
+async def update_system_message(id: int, content: SystemSettings, db: Session = Depends(get_db)):
+    # Находим запись по id
+    settings = db.query(AiSettings).filter(AiSettings.id == id).first()
+
+    if not settings:
+        raise HTTPException(status_code=404, detail="Settings not found")
+
+    # Обновляем запись
+    settings.content = content.content
+    db.commit()
+    db.refresh(settings)
+
+    return settings
 
 @ai.post('/generate/{platform}/{chatid}')
 async def generate_answer_ai(platform: str, chatid: str, db: Session = Depends(get_db)):
