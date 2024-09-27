@@ -7,9 +7,13 @@ from assem.models import Messages, AiSettings
 from assem.schemas import ChatArray, Chat, SystemSettings
 from openai import OpenAI
 from assem.security.send_message import send_message
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
+api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=api_key)
 
-client = OpenAI(api_key="")
 ai = APIRouter(prefix='/api/v2/ai', tags=['ИИ'])
 
 
