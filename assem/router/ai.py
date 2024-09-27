@@ -135,5 +135,5 @@ async def generate_answer_ai(platform: str, chatid: str, db: Session = Depends(g
     db.add(new_message)
     db.commit()
 
-    send_message('', chatid, generated_response)
+    send_message('', 0, chatid, generated_response)
     return {"response": [generated_response]}
