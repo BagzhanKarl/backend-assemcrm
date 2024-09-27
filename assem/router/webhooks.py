@@ -34,7 +34,7 @@ async def handle_whatsapp_webhook(platform: str, request: WebhookRequest, db: Se
     db.commit()
 
     async with httpx.AsyncClient() as client:
-        response = await client.post(f'http://127.0.0.1:8000/api/v2/ai/generate/{platform}/{msg.chat_id}')
+        response = await client.post(f'http://127.0.0.1:8000/api/v2/ai/generate/{platform}/{msg.chat_id}', timeout=10)
 
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=response.json().get("detail", "Error generating response"))
