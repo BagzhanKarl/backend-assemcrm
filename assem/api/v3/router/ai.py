@@ -3,7 +3,7 @@ from http.client import HTTPException
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from assem.db.database import get_db
-from assem.db.models import Messages, AiSettings
+from assem.db.models import Messages, AiSettings, Bagzhan
 from assem.db.schemas import ChatArray, Chat, SystemSettings
 from openai import OpenAI
 from assem.security.send_message import send_message
@@ -95,7 +95,7 @@ async def generate_answer_ai(platform: str, chatid: str, db: Session = Depends(g
     except HTTPException as e:
         return {"detail": e.detail}
 
-@ai.get('/bagzhan', response_model=List[BagzhanSchema])
+@ai.get('/bagzhan')
 async def get_all_bagzhan_records(db: Session = Depends(get_db)):
     records = db.query(Bagzhan).all()
     if not records:
