@@ -7,11 +7,8 @@ from assem.models import Messages, AiSettings
 from assem.schemas import ChatArray, Chat, SystemSettings
 from openai import OpenAI
 from assem.security.send_message import send_message
-import os
-from dotenv import load_dotenv
-load_dotenv()
 
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = ""
 client = OpenAI(api_key=api_key)
 
 ai = APIRouter(prefix='/api/v2/ai', tags=['ИИ'])
@@ -45,7 +42,6 @@ async def get_chat_messages(platform: str, chatid: str, db: Session = Depends(ge
     ]
 
     return ChatArray(messages=chat_messages)
-
 @ai.post('/system/settings/{platform}')
 async def create_system_messages(platform: str, content: SystemSettings, db: Session = Depends(get_db)):
     settings = AiSettings(platform=platform, role="system", content=content.content)
@@ -55,7 +51,6 @@ async def create_system_messages(platform: str, content: SystemSettings, db: Ses
     db.refresh(settings)
 
     return [settings]
-
 @ai.post('/system/settings/get/{platform}')
 async def get_all_system_messages(platform: str, db: Session = Depends(get_db)):
     settings = db.query(AiSettings).filter(AiSettings.platform == platform).all()
@@ -73,7 +68,6 @@ async def delete_system_message(id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"detail": "Settings deleted successfully"}
-
 @ai.put('/system/settings/{id}')
 async def update_system_message(id: int, content: SystemSettings, db: Session = Depends(get_db)):
     # Находим запись по id
@@ -88,7 +82,6 @@ async def update_system_message(id: int, content: SystemSettings, db: Session = 
     db.refresh(settings)
 
     return settings
-
 @ai.post('/generate/{platform}/{chatid}')
 async def generate_answer_ai(platform: str, chatid: str, db: Session = Depends(get_db)):
     # Получаем все системные сообщения из базы данных

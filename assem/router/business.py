@@ -46,8 +46,7 @@ async def new_business(new: NewBusiness, response: Response, access_token: str =
     # Обновление JWT токена
     response.delete_cookie(key="access_token")
     newtoken = generate_token(user.id, user.business_id, user.role_id)
-    response.set_cookie(key="access_token", value=newtoken, httponly=True, max_age=3600, secure=True, domain="*.assemcrm.kz", samesite=None)
-
+    response.set_cookie(key="access_token", value=newtoken, max_age=3600)
     return FullResponse(user=user, business=nbus)
 
 
