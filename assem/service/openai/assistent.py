@@ -106,7 +106,7 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
 
     else:
         # Если функции не вызываются, возвращаем ответ AI
-        generated_response = response_message["content"]
+        generated_response = response_message.content
 
         # Сохраняем ответ AI в базе данных
         new_message = Messages(
