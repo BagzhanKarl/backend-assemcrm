@@ -95,3 +95,9 @@ async def generate_answer_ai(platform: str, chatid: str, db: Session = Depends(g
     except HTTPException as e:
         return {"detail": e.detail}
 
+@ai.get('/bagzhan', response_model=List[BagzhanSchema])
+async def get_all_bagzhan_records(db: Session = Depends(get_db)):
+    records = db.query(Bagzhan).all()
+    if not records:
+        raise HTTPException(status_code=404, detail="No records found")
+    return records
