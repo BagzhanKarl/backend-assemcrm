@@ -7,6 +7,7 @@ from assem.db.models import Messages, AiSettings
 from assem.db.schemas import ChatArray, Chat, SystemSettings
 from openai import OpenAI
 from assem.security.send_message import send_message
+from assem.service.openai import chat_with_ai
 
 api_key = ""
 client = OpenAI(api_key=api_key)
@@ -84,49 +85,13 @@ async def update_system_message(id: int, content: SystemSettings, db: Session = 
     return settings
 @ai.post('/generate/{platform}/{chatid}')
 async def generate_answer_ai(platform: str, chatid: str, db: Session = Depends(get_db)):
-    # Получаем все системные сообщения из базы данных
-    system_settings = db.query(AiSettings).filter(AiSettings.platform == platform, AiSettings.role == "system").all()
+    try:
+        response = chat_with_ai(platform, chatid, db)
 
-    if not system_settings:
-        return {"detail": "System settings not found"}
+        # Отправляем сообщение пользователю (если необходимо)
+        send_message('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', 0, chatid, response)
 
-    # Формируем список системных сообщений
-    system_messages = [{"role": "system", "content": setting.content} for setting in system_settings]
+        return {"response": response}
+    except HTTPException as e:
+        return {"detail": e.detail}
 
-    # Получаем сообщения из базы данных
-    messages = db.query(Messages).filter(Messages.chat_id == chatid).all()
-
-    # Проверяем, есть ли сообщения
-    if not messages:
-        return {"detail": "Messages not found"}
-
-    # Собираем сообщения для передачи в OpenAI
-    message_list = system_messages + [
-        {
-            "role": "user" if message.side == "in" else "assistant",
-            "content": message.text
-        }
-        for message in messages
-    ]
-
-    # Генерируем ответ от AI
-    completion = client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=message_list
-    )
-
-    # Получаем сгенерированный текст
-    generated_response = completion.choices[0].message.content
-
-    # Сохраняем сгенерированный ответ в базе данных
-    new_message = Messages(
-        chat_id=chatid,
-        text=generated_response,
-        side='out',  # Указываем сторону как 'out' для ответа от AI
-        business=platform
-    )
-    db.add(new_message)
-    db.commit()
-
-    send_message('', 0, chatid, generated_response)
-    return {"response": [generated_response]}
