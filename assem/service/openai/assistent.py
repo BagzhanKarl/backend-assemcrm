@@ -61,8 +61,8 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
 
     # Проверяем, есть ли запрос на вызов функции
     if response_message.function_call:
-        function_name = response_message["function_call"]["name"]
-        function_args = json.loads(response_message["function_call"]["arguments"])
+        function_name = response_message.function_call.name
+        function_args = json.loads(response_message.function_call.arguments)
 
         if function_name == "save_bagzhan":
             # Вызываем функцию и получаем ответ
