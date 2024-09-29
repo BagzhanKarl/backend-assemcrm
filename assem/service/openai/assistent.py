@@ -60,7 +60,7 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
     response_message = response.choices[0].message
 
     # Проверяем, есть ли запрос на вызов функции
-    if response_message.get("function_call"):
+    if response_message.function_call:
         function_name = response_message["function_call"]["name"]
         function_args = json.loads(response_message["function_call"]["arguments"])
 
