@@ -1,14 +1,12 @@
-import datetime
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from assem.db.database import get_db
-from assem.models import Category
-from assem.schemas import CategoryCreate
-from assem.schemas.category import CategoryResponse
+from assem.db.models import Category
+from assem.db.schemas import CategoryCreate
+from assem.db.schemas.category import CategoryResponse
 
-categoryAPI = APIRouter(prefix='/api/v2/category', tags=['Категории бизнеса'])
+categoryAPI = APIRouter(prefix='/api/admin/category', tags=['Категории бизнеса'])
 
 @categoryAPI.post('/create')
 async def new_category(category: CategoryCreate, db: Session = Depends(get_db)):

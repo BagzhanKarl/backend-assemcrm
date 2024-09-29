@@ -4,9 +4,9 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Cookie
 from sqlalchemy.orm import Session
 from assem.db.database import get_db
-from assem.models import Business
-from assem.models.branch import Branch
-from assem.schemas.branch import BranchCreate, BranchResponse, BranchResponseAll
+from assem.db.models import Business
+from assem.db.models.branch import Branch
+from assem.db.schemas.branch import BranchCreate, BranchResponse, BranchResponseAll
 from assem.security import decode_token
 
 branch_router = APIRouter(prefix='/api/v2/branch', tags=['Филиалы'])

@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, Cookie, Response
 from sqlalchemy.orm import Session
 
 from assem.db.database import get_db
-from assem.models import Type, Business, User
-from assem.schemas import NewBusiness, BusinessResponse, FullResponse  # Предположим, что вы создали схему BusinessResponse
+from assem.db.models import Type, Business, User
+from assem.db.schemas import NewBusiness, FullResponse  # Предположим, что вы создали схему BusinessResponse
 from assem.security import generate_id, decode_token, generate_token
 
 businessAPI = APIRouter(prefix='/api/v2/business', tags=['Бизнес'])

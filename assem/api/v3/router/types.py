@@ -1,13 +1,11 @@
-import datetime
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from assem.db.database import get_db
-from assem.models import Type, Category
-from assem.schemas import AddType, ResponseType
+from assem.db.models import Type, Category
+from assem.db.schemas import AddType, ResponseType
 
-typesApi = APIRouter(prefix='/api/v2/types', tags=['Виды бизнеса'])
+typesApi = APIRouter(prefix='/api/admin/types', tags=['Виды бизнеса'])
 
 @typesApi.post('/create', response_model=ResponseType)
 async def add_type(type: AddType, db: Session = Depends(get_db)):

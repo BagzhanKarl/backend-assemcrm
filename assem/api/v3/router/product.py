@@ -1,13 +1,13 @@
 # routes/product.py
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, Cookie, Response,Query
+from fastapi import APIRouter, Depends, HTTPException, Cookie, Query
 from sqlalchemy.orm import Session
 from assem.db.database import get_db
-from assem.models import Business
-from assem.models.product import Product
-from assem.models.product_image import ProductImage
-from assem.schemas.product import ProductResponse, ProductImageResponse, ProductCreate, ProductShow
+from assem.db.models import Business
+from assem.db.models.product import Product
+from assem.db.models.product_image import ProductImage
+from assem.db.schemas.product import ProductResponse, ProductCreate, ProductShow
 from assem.security import decode_token
 
 product_router = APIRouter(prefix='/api/v2/products', tags=['Продукты'])

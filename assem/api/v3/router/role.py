@@ -1,11 +1,11 @@
 # router/role.py
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from assem.db.database import get_db
-from assem.models.roles import Role
-from assem.schemas.role import RoleCreate, RoleRead
+from assem.db.models.roles import Role
+from assem.db.schemas.role import RoleCreate, RoleRead
 
-role_router = APIRouter(prefix="/api/v2/roles", tags=["Roles"])
+role_router = APIRouter(prefix="/api/admin/roles", tags=["Roles"])
 
 # Добавление новой роли
 @role_router.post("/create", response_model=RoleRead, status_code=status.HTTP_201_CREATED)

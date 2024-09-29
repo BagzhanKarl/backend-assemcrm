@@ -16,3 +16,7 @@ class RoleRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+class GPTAdd(BaseModel):
+    token: str
+    admin: str = 'assemteam'

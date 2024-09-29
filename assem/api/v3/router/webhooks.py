@@ -3,8 +3,8 @@ import httpx
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from assem.db.database import get_db
-from assem.models import Whatsapp, Messages
-from assem.schemas import WebhookRequest, MessageBody
+from assem.db.models import Whatsapp, Messages
+from assem.db.schemas import WebhookRequest
 
 webhook_router = APIRouter(prefix='/api/v2/webhook', tags=['Webhook'])
 

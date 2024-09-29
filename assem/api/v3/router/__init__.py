@@ -7,3 +7,4 @@ from .branch import branch_router
 from .product import product_router
 from .webhooks import webhook_router
 from .ai import ai
+from .openai import openai_router

@@ -13,6 +13,7 @@ class Business(Base):
     platformid = Column(String(60), nullable=False)
     logo_link = Column(String(255), nullable=True)
     kaspi_pay = Column(String(255), nullable=True)
+    whapi_token = Column(String(255), nullable=True)
 
     balance = Column(Numeric(10, 2), nullable=False, default=0)
 

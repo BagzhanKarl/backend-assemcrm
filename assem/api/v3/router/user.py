@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, Cookie
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
-from assem.db.database import engine, get_db, Base
-from assem.models import User
-from assem.schemas import UserCreate, UserLogin, ResponseUserCreate
-from assem.security import hash_password, generate_token, verify_password, decode_token
+from assem.db.database import engine, get_db
+from assem.db.models import User
+from assem.db.schemas import UserCreate, UserLogin
+from assem.security import hash_password, generate_token, verify_password
 
 User.metadata.create_all(bind=engine)
 

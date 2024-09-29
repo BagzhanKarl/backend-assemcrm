@@ -11,3 +11,10 @@ class AiSettings(Base):
     platform = Column(String(60), nullable=False)
     role = Column(String(60), nullable=False)
     content = Column(Text(25000), nullable=False)
+
+class GTPOpen(Base):
+    __tablename__ = 'gtptoken'
+
+    id = Column(Integer, primary_key=True, index=True)
+    token = Column(String(255))
+    admin = Column(String(255))

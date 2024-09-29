@@ -3,8 +3,8 @@ from http.client import HTTPException
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from assem.db.database import get_db
-from assem.models import Messages, AiSettings
-from assem.schemas import ChatArray, Chat, SystemSettings
+from assem.db.models import Messages, AiSettings
+from assem.db.schemas import ChatArray, Chat, SystemSettings
 from openai import OpenAI
 from assem.security.send_message import send_message
 
