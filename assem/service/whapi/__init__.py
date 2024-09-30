@@ -1,1 +1,1 @@
-from .send_message import send_text_message, send_image_message, react_to_message
+from .send_message import send_text_message, send_image_message, react_to_message_token
