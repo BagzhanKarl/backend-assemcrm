@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from assem.db.models import AiSettings, GTPOpen
 from assem.db.models import Messages
-from assem.db.crud.admin import save_bagzhan
+from assem.db.crud.admin import save_bagzhan, find_meetings_by_date, cancel_meeting, check_user_has_meeting, \
+    check_meeting_on_date
 from openai import OpenAI
 from datetime import datetime
 
@@ -25,7 +26,7 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
     system_messages = [{"role": "system", "content": setting.content} for setting in system_settings]
 
     if chat_id == '77761174378@s.whatsapp.net':
-        system_messages.append({"role": "system", "content": f"ID пользователя: {chat_id}, сегодня: {current_datetime}. Это твой босс. Если спросить передай список встреч."})
+        system_messages.append({"role": "system", "content": f"ID пользователя: {chat_id}, сегодня: {current_datetime}. Это твой босс. Его имя Багжан. Кроме него у тебя нету босса в этой компаний!"})
     else:
         system_messages.append({"role": "system", "content": f"ID клиента: {chat_id}, сегодня: {current_datetime}"})
     previous_messages = db.query(Messages).filter(Messages.chat_id == chat_id).all()
@@ -46,7 +47,7 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
                     "chat_id": {"type": "string", "description": "ID чата лида"},
                     "date": {"type": "string", "description": "Дата встречи"},
                     "note": {"type": "string",
-                             "description": "Дополнительные заметки для ИИ чтобы вспомнить и рассказать боссу"}
+                             "description": "Дополнительные заметки для ИИ чтобы вспомнить и рассказать боссу, например, Имя клиента и так далее"}
                 },
                 "required": ["chat_id", "date"]
             }
