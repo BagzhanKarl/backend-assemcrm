@@ -23,7 +23,11 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
         raise HTTPException(status_code=404, detail="System settings not found")
 
     system_messages = [{"role": "system", "content": setting.content} for setting in system_settings]
-    system_messages.append({"role": "system", "content": f"ID клиента: {chat_id}, сегодня: {current_datetime}"})
+
+    if chat_id == '77761174378@s.whatsapp.net':
+        system_messages.append({"role": "system", "content": f"ID пользователя: {chat_id}, сегодня: {current_datetime}. Это твой босс. Если спросить передай список встреч."})
+    else:
+        system_messages.append({"role": "system", "content": f"ID клиента: {chat_id}, сегодня: {current_datetime}"})
     previous_messages = db.query(Messages).filter(Messages.chat_id == chat_id).all()
     message_history = system_messages + [
         {
@@ -41,12 +45,58 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
                 "properties": {
                     "chat_id": {"type": "string", "description": "ID чата лида"},
                     "date": {"type": "string", "description": "Дата встречи"},
-                    "note": {"type": "string", "description": "Дополнительные заметки для ИИ чтобы вспомнить и рассказать боссу"}
+                    "note": {"type": "string",
+                             "description": "Дополнительные заметки для ИИ чтобы вспомнить и рассказать боссу"}
                 },
                 "required": ["chat_id", "date"]
             }
+        },
+        {
+            "name": "check_meeting_on_date",
+            "description": "Проверяет, есть ли встреча на указанную дату для лида",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "chat_id": {"type": "string", "description": "ID чата лида"},
+                    "date": {"type": "string", "description": "Дата встречи"}
+                },
+                "required": ["chat_id", "date"]
+            }
+        },
+        {
+            "name": "check_user_has_meeting",
+            "description": "Проверяет, есть ли у пользователя запланированная встреча",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "chat_id": {"type": "string", "description": "ID чата лида"}
+                },
+                "required": ["chat_id"]
+            }
+        },
+        {
+            "name": "cancel_meeting",
+            "description": "Отменяет (удаляет) встречу на указанную дату",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "chat_id": {"type": "string", "description": "ID чата лида"},
+                    "date": {"type": "string", "description": "Дата встречи"}
+                },
+                "required": ["chat_id", "date"]
+            }
+        },
+        {
+            "name": "find_meetings_by_date",
+            "description": "Ищет все встречи на определенную дату",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "date": {"type": "string", "description": "Дата для поиска встреч"}
+                },
+                "required": ["date"]
+            }
         }
-        # Добавьте другие функции по необходимости
     ]
 
     # Генерируем ответ AI с возможностью вызова функций
@@ -80,29 +130,99 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
                 "content": "Встреча успешно запланирована."
             })
 
-            # Генерируем финальный ответ AI с учетом результата функции
-            second_response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=message_history,
+        elif function_name == "check_meeting_on_date":
+            # Проверяем наличие встречи на указанную дату
+            meeting_exists = check_meeting_on_date(
+                chat_id=function_args.get("chat_id"),
+                date=function_args.get("date"),
+                db=db
             )
 
-            final_response = second_response.choices[0].message.content
+            if meeting_exists:
+                function_response = "Встреча уже запланирована на эту дату."
+            else:
+                function_response = "Встреча на эту дату не найдена."
 
-            # Сохраняем ответ AI в базе данных
-            new_message = Messages(
-                chat_id=chat_id,
-                text=final_response,
-                side='out',
-                business=platform
+            message_history.append({
+                "role": "function",
+                "name": function_name,
+                "content": function_response
+            })
+
+        elif function_name == "check_user_has_meeting":
+            # Проверяем наличие у пользователя запланированных встреч
+            user_has_meeting = check_user_has_meeting(
+                chat_id=function_args.get("chat_id"),
+                db=db
             )
-            db.add(new_message)
-            db.commit()
 
-            return final_response
+            if user_has_meeting:
+                function_response = "У пользователя есть запланированные встречи."
+            else:
+                function_response = "У пользователя нет запланированных встреч."
+
+            message_history.append({
+                "role": "function",
+                "name": function_name,
+                "content": function_response
+            })
+
+        elif function_name == "cancel_meeting":
+            # Отменяем встречу
+            function_response = cancel_meeting(
+                chat_id=function_args.get("chat_id"),
+                date=function_args.get("date"),
+                db=db
+            )
+
+            message_history.append({
+                "role": "function",
+                "name": function_name,
+                "content": function_response
+            })
+
+        elif function_name == "find_meetings_by_date":
+            # Ищем встречи по дате
+            meetings = find_meetings_by_date(
+                date=function_args.get("date"),
+                db=db
+            )
+
+            if meetings:
+                function_response = f"Найдено {len(meetings)} встреч на эту дату."
+            else:
+                function_response = "Встреч на эту дату не найдено."
+
+            message_history.append({
+                "role": "function",
+                "name": function_name,
+                "content": function_response
+            })
 
         else:
-            # Обработка других функций
+            # Обработка неизвестной функции
             raise HTTPException(status_code=400, detail=f"Unknown function: {function_name}")
+
+        # Генерируем финальный ответ AI с учетом результата функции
+        second_response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=message_history,
+        )
+
+        final_response = second_response.choices[0].message.content
+
+        # Сохраняем ответ AI в базе данных
+        new_message = Messages(
+            chat_id=chat_id,
+            text=final_response,
+            side='out',
+            business=platform
+        )
+        db.add(new_message)
+        db.commit()
+
+        return final_response
+
 
     else:
         # Если функции не вызываются, возвращаем ответ AI
