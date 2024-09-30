@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from assem.db.models import AiSettings, GTPOpen
 from assem.db.models import Messages
 from assem.db.crud.admin import save_bagzhan, find_meetings_by_date, cancel_meeting, check_user_has_meeting, \
-    check_meeting_on_date
+    check_meeting_on_date, react_to_message
 from openai import OpenAI
 from datetime import datetime
 
@@ -97,6 +97,19 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
                 },
                 "required": ["date"]
             }
+        },
+        {
+            "name": "react_to_message",
+            "description": "Функция Whatsapp который можно отправить реакцию на сообщению. Это функция доступно и вам, можете реагировать на функций",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "chat_id": {"type": "string", "description": "ID чата лида"},
+                    "message": {"type": "string", "description": "Точный и полный текст из сообщений который вы хотите реагировать"},
+                    "emoji": {"type": "string", "description": "эмодзи который вы хотите отправить"},
+                },
+                "required": ["chat_id", "message", "emoji"]
+            }
         }
     ]
 
@@ -167,6 +180,22 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
                 "name": function_name,
                 "content": function_response
             })
+        elif function_name == "react_to_message":
+            # Проверяем наличие у пользователя запланированных встреч
+            user_has_meeting = react_to_message(
+                chat_id=function_args.get("chat_id"),
+                text=function_args.get("message"),
+                emoji=function_args.get("emoji"),
+                db=db
+            )
+
+
+            message_history.append({
+                "role": "function",
+                "name": function_name,
+                "content": user_has_meeting
+            })
+
 
         elif function_name == "cancel_meeting":
             # Отменяем встречу

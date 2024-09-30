@@ -1,7 +1,11 @@
 # services/bagzhan_service.py
-
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
+
+from assem.db.models import Whatsapp
 from assem.db.models.admin import Bagzhan
+from assem.service.whapi import react_to_message
+
 
 def save_bagzhan(chat_id: str, date: str, note: str, db: Session):
     bagzhan = Bagzhan(
@@ -27,7 +31,6 @@ def check_user_has_meeting(chat_id: str, db: Session):
         return True  # Есть запланированная встреча
     return False  # Запланированных встреч нет
 
-
 def cancel_meeting(chat_id: str, date: str, db: Session):
     meeting = db.query(Bagzhan).filter(Bagzhan.chat_id == chat_id, Bagzhan.date == date).first()
     if meeting:
@@ -37,10 +40,17 @@ def cancel_meeting(chat_id: str, date: str, db: Session):
     else:
         return "No meeting found on the given date."
 
-
 def find_meetings_by_date(date: str, db: Session):
     meetings = db.query(Bagzhan).filter(Bagzhan.date == date).all()
     if meetings:
         return meetings  # Возвращаем список встреч на выбранную дату
     else:
         return []  # Встреч не найдено
+
+def react_to_message(text: str, emoji: str, chat_id: str, db: Session):
+    messages = db.query(Whatsapp).filter(and_(Whatsapp.text_body == text, Whatsapp.chat_id == chat_id)).first()
+
+    react_to_message('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', messages.id, emoji)
+
+    return 'Вы реагировали на сообщение пользователя с эмодзи'
+

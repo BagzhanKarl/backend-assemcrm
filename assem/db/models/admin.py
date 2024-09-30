@@ -12,3 +12,5 @@ class Bagzhan(Base):
     date = Column(String(255))
     note = Column(String(255))
     is_completed = Column(Boolean)
+
+    #vxBg54b-I2Xu6E7FuW-lFeEN7d9O
