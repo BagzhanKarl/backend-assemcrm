@@ -196,6 +196,13 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
                 "content": user_has_meeting
             })
 
+            new_message = Messages(
+                chat_id=chat_id,
+                text=user_has_meeting,
+                side='out',
+                business=platform
+            )
+
 
         elif function_name == "cancel_meeting":
             # Отменяем встречу
