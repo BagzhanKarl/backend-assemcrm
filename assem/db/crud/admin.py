@@ -51,5 +51,5 @@ def react_to_message(text: str, emoji: str, chat_id: str, db: Session):
     messages = db.query(Whatsapp).filter(and_(Whatsapp.text_body == text, Whatsapp.chat_id == chat_id)).first()
 
     react_to_message_token('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', messages.message_id, emoji)
-    return 'Вы реагировали на сообщение пользователя с эмодзи'
+    return f'Вы реагировали на сообщение пользователя: {text} с эмодзи: {emoji}'
 
