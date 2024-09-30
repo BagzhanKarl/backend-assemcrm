@@ -202,6 +202,8 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
                 side='out',
                 business=platform
             )
+            db.add(new_message)
+            db.commit()
 
 
         elif function_name == "cancel_meeting":
