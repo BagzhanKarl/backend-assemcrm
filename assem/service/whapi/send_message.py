@@ -35,7 +35,7 @@ def send_image_message(token, chat_id, media):
 
     return response.sent
 
-def react_to_message(token, message_id, emoji):
+def react_to_message_token(token, message_id, emoji):
 
     url = f"https://gate.whapi.cloud/messages/{message_id}/reaction"
 

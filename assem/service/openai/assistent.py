@@ -180,6 +180,7 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
                 "name": function_name,
                 "content": function_response
             })
+
         elif function_name == "react_to_message":
             # Проверяем наличие у пользователя запланированных встреч
             user_has_meeting = react_to_message(
@@ -188,7 +189,6 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
                 emoji=function_args.get("emoji"),
                 db=db
             )
-
 
             message_history.append({
                 "role": "function",

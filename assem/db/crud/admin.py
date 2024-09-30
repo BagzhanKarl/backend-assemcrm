@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from assem.db.models import Whatsapp
 from assem.db.models.admin import Bagzhan
-from assem.service.whapi import react_to_message
+from assem.service.whapi.send_message import react_to_message_token
 
 
 def save_bagzhan(chat_id: str, date: str, note: str, db: Session):
@@ -50,7 +50,7 @@ def find_meetings_by_date(date: str, db: Session):
 def react_to_message(text: str, emoji: str, chat_id: str, db: Session):
     messages = db.query(Whatsapp).filter(and_(Whatsapp.text_body == text, Whatsapp.chat_id == chat_id)).first()
 
-    react_to_message('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', messages.id, emoji)
+    react_to_message_token('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', messages.id, emoji)
 
     return 'Вы реагировали на сообщение пользователя с эмодзи'
 
