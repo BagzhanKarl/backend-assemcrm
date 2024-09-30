@@ -88,7 +88,7 @@ async def generate_answer_ai(platform: str, chatid: str, db: Session = Depends(g
     try:
         response = chat_with_ai(platform, chatid, db)
         # Отправляем сообщение пользователю (если необходимо)
-        send_message('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', 10, chatid, response)
+        send_message('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', 0, chatid, response)
 
         return {"response": response}
     except HTTPException as e:
