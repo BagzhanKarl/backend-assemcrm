@@ -87,9 +87,11 @@ async def update_system_message(id: int, content: SystemSettings, db: Session = 
 async def generate_answer_ai(platform: str, chatid: str, db: Session = Depends(get_db)):
     try:
         response = chat_with_ai(platform, chatid, db)
-
+        typing_speed = 3.33
+        message_length = len(response)
+        time_in_seconds = message_length / typing_speed
         # Отправляем сообщение пользователю (если необходимо)
-        send_message('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', 0, chatid, response)
+        send_message('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', time_in_seconds, chatid, response)
 
         return {"response": response}
     except HTTPException as e:
