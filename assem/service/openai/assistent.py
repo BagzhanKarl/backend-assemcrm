@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from assem.db.models import AiSettings, GTPOpen
 from assem.db.models import Messages
-from assem.db.crud.admin import get_products
+
 from openai import OpenAI
 from datetime import datetime
 
