@@ -58,4 +58,4 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
     db.add(new_message)
     db.commit()
 
-    return [generated_response]
+    return generated_response
