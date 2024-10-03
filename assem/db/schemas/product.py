@@ -10,6 +10,7 @@ class ProductCreate(BaseModel):
     name: str
     description: Optional[str] = None
     price: float
+    keyword: Optional[str] = None
     stock: int
     images: List[ProductImageCreate]  # Список изображений
 

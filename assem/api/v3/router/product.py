@@ -27,6 +27,7 @@ async def create_product(product_create: ProductCreate, access_token: str = Cook
         description=product_create.description,
         price=product_create.price,
         stock=product_create.stock,
+        keyword=product_create.keyword,
         business_id=payload.get('business')  # Получаем ID бизнеса из токена
     )
 
@@ -67,9 +68,9 @@ async def get_products(
     # Формируем базовый запрос для поиска продуктов
     query = db.query(Product).filter(Product.business_id.in_(business_ids))
 
-    # Если параметр поиска не пустой, добавляем фильтрацию по названию
+    # Если параметр поиска не пустой, добавляем фильтрацию по ключевым словам
     if search:
-        query = query.filter(Product.name.ilike(f'%{search}%'))  # Ищем по названию с учетом регистра
+        query = query.filter(Product.keyword.ilike(f'%{search}%'))  # Ищем по ключевым словам с учетом регистра
 
     # Получаем продукты с пагинацией
     products = query.offset(skip).limit(limit).all()

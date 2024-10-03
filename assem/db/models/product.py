@@ -13,6 +13,7 @@ class Product(Base):
     description = Column(String(500), nullable=True)
     price = Column(Float, nullable=False)
     stock = Column(Integer, nullable=False, default=0)  # Количество на складе
+    keyword = Column(String(255), nullable=True)
 
     views = Column(Integer, nullable=False, default=0)  # Количество просмотров
     clicks = Column(Integer, nullable=False, default=0)  # Количество кликов

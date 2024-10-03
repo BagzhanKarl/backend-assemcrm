@@ -1,55 +1,41 @@
-# services/bagzhan_service.py
-from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
-from assem.db.models import Whatsapp
-from assem.db.models.admin import Bagzhan
-from assem.service.whapi.send_message import react_to_message_token
+from assem.db.models import Business, Product
 
 
-def save_bagzhan(chat_id: str, date: str, note: str, db: Session):
-    bagzhan = Bagzhan(
-        chat_id=chat_id,
-        date=date,
-        note=note,
-        is_completed=False
-    )
-    db.add(bagzhan)
-    db.commit()
-    db.refresh(bagzhan)
-    return "Meeting scheduled successfully."
+def get_products(
+    platform: str,
+    db: Session,
+    search: str = None,
+    skip: int = 0,
+    limit: int = 15,
 
-def check_meeting_on_date(chat_id: str, date: str, db: Session):
-    meeting = db.query(Bagzhan).filter(Bagzhan.chat_id == chat_id, Bagzhan.date == date).first()
-    if meeting:
-        return True  # Встреча есть
-    return False  # Встречи нет
+):
+    # Найти бизнесы по platform
+    businesses = db.query(Business).filter(Business.platformid == platform).all()
+    if not businesses:
+        raise ValueError("Бизнесы не найдены по указанной платформе")
 
-def check_user_has_meeting(chat_id: str, db: Session):
-    meeting = db.query(Bagzhan).filter(Bagzhan.chat_id == chat_id).first()
-    if meeting:
-        return True  # Есть запланированная встреча
-    return False  # Запланированных встреч нет
+    # Получить список ID бизнесов
+    business_ids = [business.id for business in businesses]
 
-def cancel_meeting(chat_id: str, date: str, db: Session):
-    meeting = db.query(Bagzhan).filter(Bagzhan.chat_id == chat_id, Bagzhan.date == date).first()
-    if meeting:
-        db.delete(meeting)
-        db.commit()
-        return "Meeting successfully canceled."
-    else:
-        return "No meeting found on the given date."
+    # Формируем базовый запрос для поиска продуктов
+    query = db.query(Product).filter(Product.business_id.in_(business_ids))
 
-def find_meetings_by_date(date: str, db: Session):
-    meetings = db.query(Bagzhan).filter(Bagzhan.date == date).all()
-    if meetings:
-        return meetings  # Возвращаем список встреч на выбранную дату
-    else:
-        return []  # Встреч не найдено
+    # Если параметр поиска не пустой, добавляем фильтрацию по ключевым словам
+    if search:
+        query = query.filter(Product.keyword.ilike(f'%{search}%'))  # Ищем по ключевым словам
 
-def react_to_message(text: str, emoji: str, chat_id: str, db: Session):
-    messages = db.query(Whatsapp).filter(and_(Whatsapp.text_body == text, Whatsapp.chat_id == chat_id)).first()
+    # Получаем продукты с пагинацией
+    products = query.offset(skip).limit(limit).all()
 
-    react_to_message_token('THjJOt2vo26nYYj4IbqKXVqInFv1wx55', messages.message_id, emoji)
-    return f'Вы реагировали на сообщение пользователя: {text} с эмодзи: {emoji}'
+    return [product_to_dict(product) for product in products]
 
+def product_to_dict(product):
+    return {
+        "id": product.id,
+        "name": product.name,
+        "price": product.price,
+        "keyword": product.keyword,
+        # Добавьте другие поля, которые хотите вернуть
+    }
