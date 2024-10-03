@@ -39,7 +39,7 @@ def chat_with_ai(platform: str, chat_id: str,  db: Session):
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=message_history,
-        function_call="auto",
+
     )
 
     response_message = response.choices[0].message
