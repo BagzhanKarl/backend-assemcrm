@@ -7,7 +7,7 @@ def send_message(token, typing_time, to, body):
     payload = {
         "typing_time": typing_time,
         "to": to,
-        "body": body
+        "body": str(body)
     }
 
     headers = {
